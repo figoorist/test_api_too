@@ -14,11 +14,11 @@ wrong_password = "123456"
 blank_password = ""
 
 @pytest.fixture(scope="function", params=[
-(correct_username, correct_password, 200, "token", ""),
-(correct_username, wrong_password, 400, "non_field_errors", ["Unable to log in with provided credentials."]),
-(incorrect_username_1, correct_password, 400, "non_field_errors", ["Unable to log in with provided credentials."]),
-(correct_username, blank_password, 400, "password", ["This field may not be blank."]),
-(incorrect_username_1, blank_password, 400, "password", ["This field may not be blank."])
+({'username':correct_username, 'password':correct_password}, 200, "token", ""),
+({'username':correct_username, 'password':wrong_password}, 400, "non_field_errors", ["Unable to log in with provided credentials."]),
+({'username':incorrect_username_1, 'password':correct_password}, 400, "non_field_errors", ["Unable to log in with provided credentials."]),
+({'username':correct_username, 'password':blank_password}, 400, "password", ["This field may not be blank."]),
+({'username':incorrect_username_1, 'password':blank_password}, 400, "password", ["This field may not be blank."])
 ],
 ids=["correct username, correct password",
     "correct username, wrong password",
@@ -32,10 +32,10 @@ def param_test(request):
 
 #1 POST Получение токена
 def test_obtain_token(obtain_token, param_test):
-    (username, password, expected_status_code, expected_node, expected_message) = param_test
+    (params_data, expected_status_code, expected_node, expected_message) = param_test
 
     host = os.getenv('HOST') + "/v1/users/obtain-token"
-    response = requests.post(host, data = {'username':username, 'password':password})
+    response = requests.post(host, data = params_data)
 
     errors = []
 
@@ -49,5 +49,3 @@ def test_obtain_token(obtain_token, param_test):
 
     # assert no error message has been registered, else print messages
     assert not errors, "errors occured:\n{}".format("\n".join(errors))
-
-    #assert response.status_code == expected_status_code

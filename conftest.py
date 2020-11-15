@@ -3,6 +3,8 @@ import requests
 import dotenv
 import os
 
+dotenv.load_dotenv()
+
 @pytest.fixture(scope="session")
 def obtain_token(request):
     host = os.getenv('HOST') + "/v1/users/obtain-token"
