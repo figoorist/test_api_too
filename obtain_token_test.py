@@ -39,7 +39,6 @@ def test_obtain_token(obtain_token, param_test):
 
     errors = []
 
-    # replace assertions by conditions
     if not response.status_code == expected_status_code:
         errors.append("status codes do not match")
     if not expected_node in response.json():
@@ -47,5 +46,4 @@ def test_obtain_token(obtain_token, param_test):
     elif not expected_message == response.json()[expected_node] and response.status_code != 200:
         errors.append("message {0} doesn't contain in response".format(expected_message))
 
-    # assert no error message has been registered, else print messages
     assert not errors, "errors occured:\n{}".format("\n".join(errors))
